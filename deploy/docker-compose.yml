@@ -1,0 +1,47 @@
+services:
+  db:
+    image: mariadb:11.4
+    container_name: kumi-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - kumi-net
+
+  api:
+    build:
+      context: ../backend
+    container_name: kumi-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DEBUG: ${DEBUG:-false}
+      DATABASE_URL: mysql+pymysql://${MARIADB_USER}:${MARIADB_PASSWORD}@db:3306/${MARIADB_DATABASE}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRE_DAYS: ${JWT_EXPIRE_DAYS:-7}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      TZ: ${TZ:-Asia/Jakarta}
+    ports:
+      - "127.0.0.1:8000:8000"
+    networks:
+      - kumi-net
+
+volumes:
+  mariadb_data:
+
+networks:
+  kumi-net:
+    driver: bridge

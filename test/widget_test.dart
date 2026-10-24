@@ -1,30 +1,84 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:kumi/main.dart';
+import 'package:kumi/core/models/models.dart';
+import 'package:kumi/shared/widgets/common_widgets.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('TaskCard shows strikethrough when completed', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: TaskCard(
+            task: TaskItem(
+              id: 1,
+              title: 'Belajar',
+              dueTime: DateTime.now().add(const Duration(hours: 2)),
+              isCompleted: true,
+            ),
+            onToggle: () {},
+          ),
+        ),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    final text = tester.widget<Text>(find.text('Belajar'));
+    expect(text.style?.decoration, TextDecoration.lineThrough);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('TaskCard toggle button fires callback', (tester) async {
+    var toggled = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: TaskCard(
+            task: TaskItem(
+              id: 2,
+              title: 'Olahraga',
+              dueTime: DateTime.now().add(const Duration(hours: 1)),
+              isCompleted: false,
+            ),
+            onToggle: () => toggled = true,
+          ),
+        ),
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    await tester.tap(find.byTooltip('Selesai'));
+    expect(toggled, isTrue);
+  });
+
+  testWidgets('DailyProgressBar shows completed over total', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(body: DailyProgressBar(completed: 2, total: 5)),
+      ),
+    );
+
+    expect(find.text('2 / 5'), findsOneWidget);
+    await tester.pumpAndSettle();
+    final bar = tester.widget<LinearProgressIndicator>(
+      find.byType(LinearProgressIndicator),
+    );
+    expect(bar.value, closeTo(0.4, 0.001));
+  });
+
+  testWidgets('AchievementTile shows lock when not earned', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: AchievementTile(
+            achievement: const Achievement(
+              id: 1,
+              code: 'streak_7',
+              name: 'Seminggu Konsisten',
+              description: 'Streak 7 hari',
+              icon: 'badge_fire7',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byIcon(Icons.lock_outline_rounded), findsOneWidget);
   });
 }

@@ -1,4 +1,4 @@
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import UTC, date, datetime, time, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy import func, select
@@ -26,7 +26,7 @@ def _to_utc_naive(value: datetime) -> datetime:
     """Normalize incoming datetimes to naive UTC, which is what the DB stores."""
     if value.tzinfo is None:
         return value
-    return value.astimezone(timezone.utc).replace(tzinfo=None)
+    return value.astimezone(UTC).replace(tzinfo=None)
 
 
 def _get_owned_task(db: Session, user_id: int, task_id: int) -> Task:
@@ -161,7 +161,11 @@ def complete_task(
 ) -> TaskCompleteResponse:
     task = _get_owned_task(db, current_user.id, task_id)
 
-    target = payload.is_completed if payload and payload.is_completed is not None else not task.is_completed
+    target = (
+        payload.is_completed
+        if payload and payload.is_completed is not None
+        else not task.is_completed
+    )
 
     if target:
         task.is_completed = True

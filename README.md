@@ -1,17 +1,80 @@
-# kumi
+# Kumi
 
-A new Flutter project.
+Aplikasi *daily companion* untuk manajemen tugas mahasiswa dan pekerja muda.
+Aplikasi Flutter (`lib/`) dengan backend FastAPI (`backend/`), database MySQL/MariaDB,
+dan deployment Docker Compose (`deploy/`).
 
-## Getting Started
+## Prasyarat
 
-This project is a starting point for a Flutter application.
+- Flutter 3.47+ / Dart 3.13+
+- Python 3.12+
+- Docker & Docker Compose (opsional, untuk deployment)
 
-A few resources to get you started if this is your first Flutter project:
+## Menjalankan aplikasi Flutter
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```bash
+flutter pub get
+flutter run \
+  --dart-define=API_BASE_URL=http://10.0.2.2:8000 \
+  --dart-define=GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+`API_BASE_URL` default `http://10.0.2.2:8000` (emulator Android).
+`GOOGLE_CLIENT_ID` wajib diisi agar login Google berfungsi; jangan menyimpan nilai
+sensitif di dalam `lib/`.
+
+Perintah kualitas kode:
+
+```bash
+dart format .
+flutter analyze
+flutter test
+```
+
+## Menjalankan backend secara lokal
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt -r requirements-dev.txt
+cp .env.example .env   # isi nilai sebenarnya, jangan commit .env
+uvicorn app.main:app --reload
+```
+
+Tes dan lint backend:
+
+```bash
+cd backend
+pytest -q
+ruff check .
+ruff format .
+```
+
+## Deployment (Docker Compose)
+
+```bash
+cd deploy
+cp .env.example .env   # isi seluruh nilai; JWT_SECRET hasil `openssl rand -hex 32`
+docker compose up -d --build
+docker compose logs -f api
+docker compose down
+```
+
+Jangan pernah meng-commit `deploy/.env` atau nilai secret apa pun.
+
+## Dokumentasi
+
+| Dokumen | Isi |
+|---|---|
+| [`docs/01-brd-prd.md`](docs/01-brd-prd.md) | BRD & PRD |
+| [`docs/02-architecture-deployment.md`](docs/02-architecture-deployment.md) | Arsitektur & deployment |
+| [`docs/03-database-erd.md`](docs/03-database-erd.md) | Skema & ERD |
+| [`docs/04-api-contract.md`](docs/04-api-contract.md) | Kontrak API |
+| [`docs/05-ui-ux-wireframe.md`](docs/05-ui-ux-wireframe.md) | Wireframe & flow |
+| [`docs/06-repo-guidelines.md`](docs/06-repo-guidelines.md) | Aturan repositori |
+
+## Kontribusi
+
+Ikuti [`docs/06-repo-guidelines.md`](docs/06-repo-guidelines.md): branch
+`feature/*`/`fix/*` dari `development`, Conventional Commits, dan PR dengan CI hijau.

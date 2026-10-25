@@ -6,7 +6,14 @@ from app.database import Base, SessionLocal, engine
 from app.models import Achievement, KumiDialog
 
 ACHIEVEMENTS = [
-    ("first_steps", "Langkah Pertama", "Selesaikan tugas pertamamu", "badge_first", "total_completed", 1),
+    (
+        "first_steps",
+        "Langkah Pertama",
+        "Selesaikan tugas pertamamu",
+        "badge_first",
+        "total_completed",
+        1,
+    ),
     ("task_10", "Produktif", "Selesaikan 10 tugas", "badge_ten", "total_completed", 10),
     ("task_50", "Sangat Produktif", "Selesaikan 50 tugas", "badge_fifty", "total_completed", 50),
     ("streak_3", "Tiga Hari", "Streak 3 hari berturut-turut", "badge_fire3", "streak", 3),

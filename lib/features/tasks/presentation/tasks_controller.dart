@@ -29,8 +29,10 @@ class TasksController extends ChangeNotifier {
   bool get loading => _loading;
   String? get error => _error;
 
-  List<TaskItem> get pendingTasks => _tasks.where((task) => !task.isCompleted).toList();
-  List<TaskItem> get completedTasks => _tasks.where((task) => task.isCompleted).toList();
+  List<TaskItem> get pendingTasks =>
+      _tasks.where((task) => !task.isCompleted).toList();
+  List<TaskItem> get completedTasks =>
+      _tasks.where((task) => task.isCompleted).toList();
 
   void setDate(DateTime date) {
     _selectedDate = DateTime(date.year, date.month, date.day);
@@ -53,7 +55,10 @@ class TasksController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _tasks = await _repository.fetchTasks(date: _selectedDate, status: _statusFilter);
+      _tasks = await _repository.fetchTasks(
+        date: _selectedDate,
+        status: _statusFilter,
+      );
     } on ApiException catch (error) {
       if (error.isUnauthorized) {
         await _auth.handleExpiredSession();
@@ -134,7 +139,9 @@ class TasksController extends ChangeNotifier {
   Future<GamificationResult?> toggleTask(TaskItem task) async {
     try {
       final result = await _repository.toggleComplete(task.id);
-      _tasks = _tasks.map((item) => item.id == task.id ? result.task : item).toList();
+      _tasks = _tasks
+          .map((item) => item.id == task.id ? result.task : item)
+          .toList();
 
       if (result.task.isCompleted) {
         await _notifications.cancelTaskReminder(task.id);

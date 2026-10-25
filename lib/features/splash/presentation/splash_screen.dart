@@ -31,17 +31,14 @@ class _SplashScreenState extends State<SplashScreen> {
             const SizedBox(height: AppSpacing.xl),
             Text(
               'KUMI',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 4,
-                  ),
+              style: Theme.of(context).textTheme.headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.bold, letterSpacing: 4),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Teman kecil untuk harimu',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.muted,
-                  ),
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(color: AppColors.muted),
             ),
             const SizedBox(height: AppSpacing.xxl),
             const SizedBox(

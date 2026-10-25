@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import jwt
 from google.auth.transport import requests as google_requests
@@ -57,7 +57,7 @@ def verify_google_token(token: str) -> GoogleUserInfo:
 
 def create_access_token(user_id: int) -> tuple[str, int]:
     expires_in = settings.jwt_expire_days * 24 * 60 * 60
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     payload = {
         "sub": str(user_id),
         "iat": now,

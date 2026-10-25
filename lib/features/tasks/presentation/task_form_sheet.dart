@@ -31,8 +31,11 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.task?.title ?? '');
-    _descriptionController = TextEditingController(text: widget.task?.description ?? '');
-    _dueTime = widget.task?.dueTime ?? DateTime.now().add(const Duration(hours: 1));
+    _descriptionController = TextEditingController(
+      text: widget.task?.description ?? '',
+    );
+    _dueTime =
+        widget.task?.dueTime ?? DateTime.now().add(const Duration(hours: 1));
   }
 
   @override
@@ -59,7 +62,13 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
     if (time == null || !mounted) return;
 
     setState(() {
-      _dueTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+      _dueTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        time.hour,
+        time.minute,
+      );
     });
   }
 
@@ -122,9 +131,8 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
             children: [
               Text(
                 _isEditing ? 'Edit tugas' : 'Tugas baru',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(context).textTheme.titleLarge
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: AppSpacing.lg),
               TextFormField(
@@ -162,9 +170,14 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
                   decoration: InputDecoration(
                     labelText: 'Tenggat *',
                     errorText: _fieldErrors['due_time'],
-                    suffixIcon: const Icon(Icons.calendar_today_rounded, size: 18),
+                    suffixIcon: const Icon(
+                      Icons.calendar_today_rounded,
+                      size: 18,
+                    ),
                   ),
-                  child: Text(DateFormat('d MMM yyyy, HH.mm', 'id_ID').format(_dueTime)),
+                  child: Text(
+                    DateFormat('d MMM yyyy, HH.mm', 'id_ID').format(_dueTime),
+                  ),
                 ),
               ),
               if (isPast)
@@ -172,22 +185,23 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
                   padding: const EdgeInsets.only(top: AppSpacing.sm),
                   child: Text(
                     'Tenggat sudah lewat. Pastikan ini memang disengaja.',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.warning,
-                        ),
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: AppColors.warning),
                   ),
                 ),
               const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
-                  const Icon(Icons.notifications_active_outlined,
-                      size: 16, color: AppColors.muted),
+                  const Icon(
+                    Icons.notifications_active_outlined,
+                    size: 16,
+                    color: AppColors.muted,
+                  ),
                   const SizedBox(width: AppSpacing.xs),
                   Text(
                     'Pengingat 15 menit sebelum tenggat',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.muted,
-                        ),
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: AppColors.muted),
                   ),
                 ],
               ),
@@ -196,9 +210,8 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
                   padding: const EdgeInsets.only(top: AppSpacing.md),
                   child: Text(
                     _error!,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.danger,
-                        ),
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: AppColors.danger),
                   ),
                 ),
               const SizedBox(height: AppSpacing.lg),

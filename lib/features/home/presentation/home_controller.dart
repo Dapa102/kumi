@@ -65,7 +65,10 @@ class HomeController extends ChangeNotifier {
   Future<void> tapMascot() async {
     final context = _resolveContext();
     try {
-      final dialog = await _repository.fetchDialog(context: context, excludeId: _lastDialogId);
+      final dialog = await _repository.fetchDialog(
+        context: context,
+        excludeId: _lastDialogId,
+      );
       _lastDialogId = dialog.id;
       _dialogText = dialog.text;
     } catch (_) {

@@ -26,7 +26,9 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.screenPadding,
+          ),
           child: Column(
             children: [
               const Spacer(flex: 2),
@@ -34,18 +36,15 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.xl),
               Text(
                 'Halo, aku Kumi!',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(context).textTheme.headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 'Aku bantu kamu mengatur hari\njadi lebih ringan.',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.muted,
-                      height: 1.5,
-                    ),
+                style: Theme.of(context).textTheme.bodyMedium
+                    ?.copyWith(color: AppColors.muted, height: 1.5),
               ),
               const Spacer(flex: 3),
               FilledButton(
@@ -74,9 +73,8 @@ class LoginScreen extends StatelessWidget {
               Text(
                 'Dengan masuk, kamu setuju pada Ketentuan Layanan.',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.muted,
-                    ),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: AppColors.muted),
               ),
               const SizedBox(height: AppSpacing.xl),
             ],

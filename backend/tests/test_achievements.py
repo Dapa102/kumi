@@ -1,8 +1,8 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 
 def _future(days: int = 1) -> str:
-    return (datetime.now(timezone.utc) + timedelta(days=days)).isoformat().replace("+00:00", "Z")
+    return (datetime.now(UTC) + timedelta(days=days)).isoformat().replace("+00:00", "Z")
 
 
 def _create(client, headers, title="Tugas"):

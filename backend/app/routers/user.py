@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import func, select
@@ -13,26 +13,28 @@ router = APIRouter(prefix="/api/v1/user", tags=["user"])
 
 
 def _profile_payload(db: Session, user: User) -> UserProfile:
-    total_tasks = db.scalar(
-        select(func.count(Task.id)).where(Task.user_id == user.id)
-    ) or 0
-    completed_tasks = db.scalar(
-        select(func.count(Task.id)).where(
-            Task.user_id == user.id, Task.is_completed.is_(True)
+    total_tasks = db.scalar(select(func.count(Task.id)).where(Task.user_id == user.id)) or 0
+    completed_tasks = (
+        db.scalar(
+            select(func.count(Task.id)).where(Task.user_id == user.id, Task.is_completed.is_(True))
         )
-    ) or 0
+        or 0
+    )
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     day_start = now.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=None)
     day_end = day_start + timedelta(days=1)
-    completed_today = db.scalar(
-        select(func.count(Task.id)).where(
-            Task.user_id == user.id,
-            Task.completed_at.is_not(None),
-            Task.completed_at >= day_start,
-            Task.completed_at < day_end,
+    completed_today = (
+        db.scalar(
+            select(func.count(Task.id)).where(
+                Task.user_id == user.id,
+                Task.completed_at.is_not(None),
+                Task.completed_at >= day_start,
+                Task.completed_at < day_end,
+            )
         )
-    ) or 0
+        or 0
+    )
 
     rate = round(completed_tasks / total_tasks, 2) if total_tasks else 0.0
 

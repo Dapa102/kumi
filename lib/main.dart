@@ -53,9 +53,15 @@ class _KumiAppState extends State<KumiApp> {
     _storage = TokenStorage();
     _notifications = NotificationService();
     _authRepository = AuthRepository(api: _api, storage: _storage);
-    _authController = AuthController(repository: _authRepository, storage: _storage);
+    _authController = AuthController(
+      repository: _authRepository,
+      storage: _storage,
+    );
     _taskRepository = TaskRepository(_api);
-    _homeController = HomeController(repository: _taskRepository, auth: _authController);
+    _homeController = HomeController(
+      repository: _taskRepository,
+      auth: _authController,
+    );
     _tasksController = TasksController(
       repository: _taskRepository,
       auth: _authController,
@@ -89,13 +95,25 @@ class _KumiAppState extends State<KumiApp> {
       },
       routes: [
         GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
-        GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => const LoginScreen(),
+        ),
         ShellRoute(
           builder: (context, state, child) => AppShell(child: child),
           routes: [
-            GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
-            GoRoute(path: '/tasks', builder: (context, state) => const TasksScreen()),
-            GoRoute(path: '/profile', builder: (context, state) => const ProfileScreen()),
+            GoRoute(
+              path: '/home',
+              builder: (context, state) => const HomeScreen(),
+            ),
+            GoRoute(
+              path: '/tasks',
+              builder: (context, state) => const TasksScreen(),
+            ),
+            GoRoute(
+              path: '/profile',
+              builder: (context, state) => const ProfileScreen(),
+            ),
           ],
         ),
       ],

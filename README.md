@@ -67,7 +67,8 @@ Jangan pernah meng-commit `deploy/.env` atau nilai secret apa pun.
 
 | Dokumen | Isi |
 |---|---|
-| [`docs/01-brd-prd.md`](docs/01-brd-prd.md) | BRD & PRD |
+| [`docs/BRD.md`](docs/BRD.md) | Business Requirements Document (BRD) |
+| [`docs/PRD.md`](docs/PRD.md) | Product Requirements Document (PRD) |
 | [`docs/02-architecture-deployment.md`](docs/02-architecture-deployment.md) | Arsitektur & deployment |
 | [`docs/03-database-erd.md`](docs/03-database-erd.md) | Skema & ERD |
 | [`docs/04-api-contract.md`](docs/04-api-contract.md) | Kontrak API |

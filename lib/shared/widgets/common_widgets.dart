@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../core/config/app_config.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/models/models.dart';
 
 class TaskCard extends StatelessWidget {

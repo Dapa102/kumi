@@ -13,11 +13,14 @@ from app.config import cors_origin_list, settings
 from app.database import Base, SessionLocal, engine
 from app.routers import achievements, auth, kumi, tasks, user
 from app.schemas import HealthOut
+from app.seed import seed
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
+    if settings.auto_seed:
+        seed()
     yield
 
 
@@ -34,7 +37,7 @@ app.add_middleware(
     allow_origins=cors_origin_list(),
     allow_credentials=False,
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_headers=["Authorization", "Content-Type", "X-Timezone-Offset"],
 )
 
 app.include_router(auth.router)

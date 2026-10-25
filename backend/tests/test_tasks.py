@@ -2,6 +2,8 @@ from datetime import UTC, datetime, timedelta
 
 from fastapi.testclient import TestClient
 
+from app.models import Task
+
 
 def _future(days: int = 1) -> str:
     return (datetime.now(UTC) + timedelta(days=days)).isoformat().replace("+00:00", "Z")
@@ -123,3 +125,38 @@ def test_complete_is_idempotent_when_target_given(client, auth_headers):
         f"/api/v1/tasks/{task['id']}/complete", json={"is_completed": True}, headers=auth_headers
     ).json()
     assert first["completed_at"] == second["completed_at"]
+
+
+def test_update_task_rejects_past_due_time(client, auth_headers):
+    task = _create(client, auth_headers)
+    past = (datetime.now(UTC) - timedelta(hours=1)).isoformat().replace("+00:00", "Z")
+
+    response = client.put(
+        f"/api/v1/tasks/{task['id']}",
+        json={"title": task["title"], "due_time": past},
+        headers=auth_headers,
+    )
+
+    assert response.status_code == 422
+    assert response.json()["detail"]["fields"]["due_time"] == "Tenggat harus di masa depan"
+
+
+def test_list_tasks_uses_client_local_day(client, db_session, user, auth_headers):
+    # 2026-10-20 18:00 UTC is 2026-10-21 01:00 in WIB (UTC+7).
+    db_session.add(
+        Task(
+            user_id=user.id,
+            title="Tugas dini hari",
+            due_time=datetime(2026, 10, 20, 18, 0),
+        )
+    )
+    db_session.commit()
+    headers = {**auth_headers, "X-Timezone-Offset": "420"}
+
+    next_day = client.get("/api/v1/tasks", params={"date": "2026-10-21"}, headers=headers).json()
+    previous_day = client.get(
+        "/api/v1/tasks", params={"date": "2026-10-20"}, headers=headers
+    ).json()
+
+    assert next_day["total"] == 1
+    assert previous_day["total"] == 0

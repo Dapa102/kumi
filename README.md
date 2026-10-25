@@ -38,9 +38,12 @@ cd backend
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
-cp .env.example .env   # isi nilai sebenarnya, jangan commit .env
+cp .env.example .env   # wajib; isi JWT_SECRET hasil `openssl rand -hex 32`
 uvicorn app.main:app --reload
 ```
+
+`JWT_SECRET` wajib diisi minimal 32 karakter — API menolak start jika kosong.
+Achievement dan dialog awal di-seed otomatis saat startup (`AUTO_SEED=true`, idempotent).
 
 Tes dan lint backend:
 
@@ -61,6 +64,7 @@ docker compose logs -f api
 docker compose down
 ```
 
+Compose menolak start jika `JWT_SECRET` atau password MariaDB belum diisi.
 Jangan pernah meng-commit `deploy/.env` atau nilai secret apa pun.
 
 ## Dokumentasi

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../core/config/app_config.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/models/models.dart';
 import '../../../shared/widgets/common_widgets.dart';
 import '../../../shared/widgets/kumi_mascot.dart';

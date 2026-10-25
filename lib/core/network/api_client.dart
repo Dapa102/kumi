@@ -43,6 +43,8 @@ class ApiClient {
     final headers = <String, String>{
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      // Backend uses this to compute the user's local calendar day.
+      'X-Timezone-Offset': '${DateTime.now().timeZoneOffset.inMinutes}',
     };
     if (_token != null) {
       headers['Authorization'] = 'Bearer $_token';

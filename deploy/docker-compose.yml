@@ -4,10 +4,10 @@ services:
     container_name: kumi-db
     restart: unless-stopped
     environment:
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
-      MARIADB_USER: ${MARIADB_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:?MARIADB_ROOT_PASSWORD wajib diisi}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:?MARIADB_DATABASE wajib diisi}
+      MARIADB_USER: ${MARIADB_USER:?MARIADB_USER wajib diisi}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:?MARIADB_PASSWORD wajib diisi}
     volumes:
       - mariadb_data:/var/lib/mysql
     healthcheck:
@@ -29,10 +29,12 @@ services:
     environment:
       DEBUG: ${DEBUG:-false}
       DATABASE_URL: mysql+pymysql://${MARIADB_USER}:${MARIADB_PASSWORD}@db:3306/${MARIADB_DATABASE}
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET wajib diisi (openssl rand -hex 32)}
       JWT_EXPIRE_DAYS: ${JWT_EXPIRE_DAYS:-7}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+      AUTO_SEED: ${AUTO_SEED:-true}
+      DEFAULT_TZ_OFFSET_MINUTES: ${DEFAULT_TZ_OFFSET_MINUTES:-420}
       TZ: ${TZ:-Asia/Jakarta}
     ports:
       - "127.0.0.1:8000:8000"

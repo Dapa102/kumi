@@ -247,12 +247,15 @@ services:
       db:
         condition: service_healthy
     environment:
+      DEBUG: ${DEBUG:-false}
       DATABASE_URL: mysql+pymysql://${MARIADB_USER}:${MARIADB_PASSWORD}@db:3306/${MARIADB_DATABASE}
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET wajib diisi}
       JWT_EXPIRE_DAYS: ${JWT_EXPIRE_DAYS:-7}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      CORS_ORIGINS: ${CORS_ORIGINS:-*}
-      TZ: Asia/Jakarta
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+      AUTO_SEED: ${AUTO_SEED:-true}
+      DEFAULT_TZ_OFFSET_MINUTES: ${DEFAULT_TZ_OFFSET_MINUTES:-420}
+      TZ: ${TZ:-Asia/Jakarta}
     ports:
       - "127.0.0.1:8000:8000"
     networks:
@@ -282,10 +285,12 @@ File `deploy/.env` (tidak di-commit):
 | `MARIADB_DATABASE` | Ya | `kumi` | Nama basis data |
 | `MARIADB_USER` | Ya | `kumi_app` | User aplikasi (bukan root) |
 | `MARIADB_PASSWORD` | Ya | `ubah-ini` | Kata sandi user aplikasi |
-| `JWT_SECRET` | Ya | 64 karakter acak | `openssl rand -hex 32` |
+| `JWT_SECRET` | Ya | 64 karakter acak | `openssl rand -hex 32`; minimal 32 karakter atau API menolak start |
 | `JWT_EXPIRE_DAYS` | Tidak | `7` | Umur token |
 | `GOOGLE_CLIENT_ID` | Ya | `123-abc.apps.googleusercontent.com` | Audience yang divalidasi |
-| `CORS_ORIGINS` | Tidak | `*` atau daftar origin | Lihat §6.3 |
+| `CORS_ORIGINS` | Tidak | `http://localhost:8080` | Daftar origin eksplisit untuk Flutter Web; lihat §6.3 |
+| `AUTO_SEED` | Tidak | `true` | Seed achievement/dialog saat startup |
+| `DEFAULT_TZ_OFFSET_MINUTES` | Tidak | `420` | Fallback offset bila klien tidak mengirim `X-Timezone-Offset` |
 | `TZ` | Tidak | `Asia/Jakarta` | Zona waktu log |
 
 Contoh `deploy/.env.example`:
@@ -294,12 +299,13 @@ Contoh `deploy/.env.example`:
 MARIADB_ROOT_PASSWORD=change-me-root
 MARIADB_DATABASE=kumi
 MARIADB_USER=kumi_app
-MARIADB_PASSWORD=change-me-app
-JWT_SECRET=change-me-64-hex
+MARIADB_PASSWORD=change-me-app-password
+JWT_SECRET=change-me-change-me-change-me-change-me
 JWT_EXPIRE_DAYS=7
 GOOGLE_CLIENT_ID=000000000000-xxxxxxxx.apps.googleusercontent.com
-CORS_ORIGINS=*
+CORS_ORIGINS=http://localhost:8080
 TZ=Asia/Jakarta
+DEBUG=false
 ```
 
 ### 5.4 Perintah operasional
@@ -314,7 +320,8 @@ docker compose logs -f api
 # cek status
 docker compose ps
 
-# migrasi/seed (dijalankan sekali)
+# seed dijalankan otomatis saat API start (idempotent, AUTO_SEED=true)
+# jalankan manual bila perlu
 docker compose exec api python -m app.seed
 
 # backup basis data
@@ -414,11 +421,9 @@ server {
 }
 ```
 
-Tambahkan zone pada blok `http` di `/etc/nginx/nginx.conf`:
-
-```nginx
-limit_req_zone $binary_remote_addr zone=auth:10m rate=10r/m;
-```
+`deploy/nginx/kumi.conf` sudah memuat `limit_req_zone` dan `limit_req_status 429`
+di bagian atas file. Jika Anda memisahkan zone ke `/etc/nginx/nginx.conf`, hapus
+baris `limit_req_zone` dari file situs agar tidak didefinisikan dua kali.
 
 Aktifkan situs dan uji konfigurasi:
 
@@ -467,7 +472,7 @@ app.add_middleware(
     allow_origins=settings.cors_origins,   # ["*"] untuk demo, daftar eksplisit untuk produksi
     allow_credentials=False,               # JWT dikirim via header, bukan cookie
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_headers=["Authorization", "Content-Type", "X-Timezone-Offset"],
 )
 ```
 
@@ -475,7 +480,7 @@ Aturan:
 
 | Lingkungan | `allow_origins` |
 |---|---|
-| Pengembangan lokal | `["*"]` |
+| Pengembangan lokal | `["http://localhost:8080"]` |
 | Produksi dengan Flutter Web | Daftar origin eksplisit, mis. `["https://app.example.com"]` |
 | Produksi mobile-only | Daftar kosong atau origin dokumentasi |
 

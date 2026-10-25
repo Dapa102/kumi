@@ -1,5 +1,7 @@
 from datetime import UTC, datetime, timedelta
 
+from app.models import Task
+
 
 def _future(days: int = 1) -> str:
     return (datetime.now(UTC) + timedelta(days=days)).isoformat().replace("+00:00", "Z")
@@ -43,3 +45,27 @@ def test_achievement_list_includes_unearned(client, auth_headers, seed_achieveme
     body = client.get("/api/v1/achievements", headers=auth_headers).json()
     assert body["total"] == 3
     assert all(item["earned"] is False for item in body["items"])
+
+
+def test_profile_load_awards_streak_badge(
+    client, db_session, user, auth_headers, seed_achievements
+):
+    now = datetime.now(UTC).replace(tzinfo=None)
+    for days_ago in range(3):
+        db_session.add(
+            Task(
+                user_id=user.id,
+                title=f"Tugas {days_ago}",
+                due_time=now,
+                is_completed=True,
+                completed_at=now - timedelta(days=days_ago),
+            )
+        )
+    db_session.commit()
+
+    profile = client.get("/api/v1/user/profile", headers=auth_headers).json()
+    assert profile["current_streak"] == 3
+
+    badges = client.get("/api/v1/achievements", headers=auth_headers).json()["items"]
+    earned = {badge["code"] for badge in badges if badge["earned"]}
+    assert "streak_3" in earned

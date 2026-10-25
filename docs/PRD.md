@@ -943,6 +943,8 @@ curl -s http://127.0.0.1:8000/health
 | DEF-17 | Server-side field error tidak dipetakan ke field form | Pesan validasi kurang presisi | P2 |
 | DEF-18 | Tidak ada E2E/integration test terhadap MariaDB | Regresi integrasi tidak terdeteksi | P1 |
 
+> **Status per 25 Oktober 2026:** DEF-01, DEF-02, DEF-03, DEF-04, DEF-09, DEF-10, DEF-13, DEF-14, dan DEF-17 sudah diperbaiki di `main` (lihat riwayat commit dan CI). Sisa P0: DEF-08 (butuh keputusan app ID + keystore). Sisa P1: DEF-11, DEF-12, DEF-18. Sisa P2: DEF-05, DEF-06, DEF-07, DEF-15, DEF-16.
+
 ### B.4 Backlog Prioritas
 
 **P0 — Wajib sebelum demo**

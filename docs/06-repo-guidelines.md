@@ -632,7 +632,8 @@ Aturan: PR tidak boleh di-merge bila CI merah.
 
 | Dokumen | Isi | Pembaruan wajib saat |
 |---|---|---|
-| `docs/01-brd-prd.md` | BRD & PRD | Lingkup atau acceptance criteria berubah |
+| `docs/BRD.md` | BRD | Lingkup bisnis atau acceptance criteria berubah |
+| `docs/PRD.md` | PRD | Lingkup produk atau acceptance criteria berubah |
 | `docs/02-architecture-deployment.md` | Arsitektur & deploy | Topologi, container, atau langkah deploy berubah |
 | `docs/03-database-erd.md` | Skema & ERD | Migrasi/kolom/indeks berubah |
 | `docs/04-api-contract.md` | Kontrak API | Endpoint, field, atau status code berubah |

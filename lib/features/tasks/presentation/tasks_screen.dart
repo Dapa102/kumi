@@ -5,7 +5,9 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/models.dart';
 import '../../../core/services/notification_service.dart';
-import '../../../shared/widgets/common_widgets.dart';
+import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/error_retry.dart';
+import '../../../shared/widgets/task_card.dart';
 import '../presentation/task_form_sheet.dart';
 import '../presentation/tasks_controller.dart';
 

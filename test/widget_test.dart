@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kumi/core/models/models.dart';
-import 'package:kumi/shared/widgets/common_widgets.dart';
+import 'package:kumi/shared/widgets/achievement_tile.dart';
+import 'package:kumi/shared/widgets/daily_progress_bar.dart';
+import 'package:kumi/shared/widgets/task_card.dart';
 
 void main() {
   testWidgets('TaskCard shows strikethrough when completed', (tester) async {

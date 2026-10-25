@@ -5,7 +5,10 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/models.dart';
-import '../../../shared/widgets/common_widgets.dart';
+import '../../../shared/widgets/daily_progress_bar.dart';
+import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/error_retry.dart';
+import '../../../shared/widgets/task_card.dart';
 import '../../../shared/widgets/kumi_mascot.dart';
 import '../../../shared/widgets/kumi_speech_bubble.dart';
 import 'home_controller.dart';

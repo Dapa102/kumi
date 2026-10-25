@@ -5,7 +5,10 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/models/models.dart';
-import '../../../shared/widgets/common_widgets.dart';
+import '../../../shared/widgets/achievement_tile.dart';
+import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/error_retry.dart';
+import '../../../shared/widgets/stat_card.dart';
 import '../../auth/presentation/auth_controller.dart';
 import 'profile_controller.dart';
 

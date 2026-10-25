@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-import '../../../core/config/app_config.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../core/models/models.dart';
 import '../../../core/network/api_client.dart';
 import '../presentation/tasks_controller.dart';

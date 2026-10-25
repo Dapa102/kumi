@@ -1,4 +1,4 @@
-from datetime import UTC, date, datetime, time, timedelta
+from datetime import UTC, date, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy import func, select
@@ -18,6 +18,7 @@ from app.schemas import (
     TaskUpdate,
 )
 from app.services.gamification import evaluate_achievements, recalculate_streak
+from app.timezone import get_tz_offset_minutes, local_day_bounds_utc
 
 router = APIRouter(prefix="/api/v1/tasks", tags=["tasks"])
 
@@ -27,6 +28,18 @@ def _to_utc_naive(value: datetime) -> datetime:
     if value.tzinfo is None:
         return value
     return value.astimezone(UTC).replace(tzinfo=None)
+
+
+def _reject_past_due(due: datetime) -> None:
+    if due <= utcnow():
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={
+                "code": "VALIDATION_ERROR",
+                "message": "Data tidak valid.",
+                "fields": {"due_time": "Tenggat harus di masa depan"},
+            },
+        )
 
 
 def _get_owned_task(db: Session, user_id: int, task_id: int) -> Task:
@@ -45,15 +58,16 @@ def list_tasks(
     task_status: str = Query(default="all", alias="status", pattern="^(all|pending|completed)$"),
     limit: int = Query(default=50, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
+    tz_offset: int = Depends(get_tz_offset_minutes),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> TaskList:
     conditions = [Task.user_id == current_user.id]
 
     if date_filter is not None:
-        start = datetime.combine(date_filter, time.min)
+        start, end = local_day_bounds_utc(date_filter, tz_offset)
         conditions.append(Task.due_time >= start)
-        conditions.append(Task.due_time < start + timedelta(days=1))
+        conditions.append(Task.due_time < end)
 
     if task_status == "pending":
         conditions.append(Task.is_completed.is_(False))
@@ -80,16 +94,7 @@ def create_task(
     current_user: User = Depends(get_current_user),
 ) -> TaskOut:
     due = _to_utc_naive(payload.due_time)
-
-    if due <= utcnow():
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={
-                "code": "VALIDATION_ERROR",
-                "message": "Data tidak valid.",
-                "fields": {"due_time": "Tenggat harus di masa depan"},
-            },
-        )
+    _reject_past_due(due)
 
     task = Task(
         user_id=current_user.id,
@@ -124,6 +129,8 @@ def update_task(
     task = _get_owned_task(db, current_user.id, task_id)
 
     due = _to_utc_naive(payload.due_time)
+    if not task.is_completed:
+        _reject_past_due(due)
 
     task.title = payload.title
     task.description = payload.description
@@ -137,6 +144,7 @@ def update_task(
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_task(
     task_id: int,
+    tz_offset: int = Depends(get_tz_offset_minutes),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Response:
@@ -146,7 +154,7 @@ def delete_task(
     db.flush()
 
     if was_completed:
-        recalculate_streak(db, current_user)
+        recalculate_streak(db, current_user, tz_offset_minutes=tz_offset)
 
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -156,6 +164,7 @@ def delete_task(
 def complete_task(
     task_id: int,
     payload: TaskComplete | None = None,
+    tz_offset: int = Depends(get_tz_offset_minutes),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> TaskCompleteResponse:
@@ -179,7 +188,7 @@ def complete_task(
     db.flush()
 
     previous_streak = current_user.current_streak
-    recalculate_streak(db, current_user)
+    recalculate_streak(db, current_user, tz_offset_minutes=tz_offset)
     awarded = evaluate_achievements(db, current_user)
 
     db.commit()

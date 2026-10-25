@@ -1,5 +1,5 @@
 import random
-from datetime import UTC, datetime
+from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
@@ -9,6 +9,7 @@ from app.database import get_db
 from app.deps import get_current_user
 from app.models import DIALOG_CONTEXTS, KumiDialog, User
 from app.schemas import DialogOut
+from app.timezone import get_tz_offset_minutes, utcnow
 
 router = APIRouter(prefix="/api/v1/kumi", tags=["kumi"])
 
@@ -25,13 +26,15 @@ def _context_from_hour(hour: int) -> str:
 def get_dialog(
     context: str | None = Query(default=None),
     exclude_id: int | None = Query(default=None, ge=1),
+    tz_offset: int = Depends(get_tz_offset_minutes),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> DialogOut:
     del current_user  # auth is required, dialog content is not user specific
 
     if context is None:
-        context = _context_from_hour(datetime.now(UTC).hour)
+        local_hour = (utcnow() + timedelta(minutes=tz_offset)).hour
+        context = _context_from_hour(local_hour)
 
     if context not in DIALOG_CONTEXTS:
         raise HTTPException(

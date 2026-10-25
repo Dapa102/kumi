@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/config/app_config.dart';
+import '../../core/theme/app_theme.dart';
 import 'kumi_mascot.dart';
 
 class KumiSpeechBubble extends StatelessWidget {

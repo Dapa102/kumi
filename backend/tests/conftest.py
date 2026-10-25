@@ -1,3 +1,9 @@
+import os
+
+# Must be set before importing app settings (JWT_SECRET is now required).
+os.environ.setdefault("JWT_SECRET", "test-secret-" + "0" * 40)
+os.environ.setdefault("AUTO_SEED", "false")
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine

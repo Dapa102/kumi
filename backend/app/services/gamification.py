@@ -4,6 +4,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.models import Achievement, Task, User, UserAchievement, utcnow
+from app.timezone import local_today, to_local_date
 
 
 def completed_tasks_count(db: Session, user_id: int) -> int:
@@ -15,9 +16,11 @@ def completed_tasks_count(db: Session, user_id: int) -> int:
     )
 
 
-def recalculate_streak(db: Session, user: User, today: date | None = None) -> bool:
+def recalculate_streak(
+    db: Session, user: User, today: date | None = None, tz_offset_minutes: int = 0
+) -> bool:
     """Recompute streak from completed_at dates. Returns True if streak value changed."""
-    today = today or utcnow().date()
+    today = today or local_today(tz_offset_minutes)
 
     rows = db.scalars(
         select(Task.completed_at)
@@ -25,7 +28,7 @@ def recalculate_streak(db: Session, user: User, today: date | None = None) -> bo
         .order_by(Task.completed_at.desc())
     ).all()
 
-    days = sorted({row.date() for row in rows}, reverse=True)
+    days = sorted({to_local_date(row, tz_offset_minutes) for row in rows}, reverse=True)
     if not days:
         changed = user.current_streak != 0 or user.last_completed_date is not None
         user.current_streak = 0

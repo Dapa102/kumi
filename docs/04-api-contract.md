@@ -18,6 +18,7 @@
 | `Content-Type: application/json` | Request | Ya (kecuali GET) | Format body |
 | `Accept: application/json` | Request | Tidak | Format respons |
 | `Authorization: Bearer <jwt>` | Request | Ya pada endpoint terproteksi | Token lokal dari `/auth/google` |
+| `X-Timezone-Offset` | Request | Tidak | Offset zona waktu klien dalam menit dari UTC (mis. `420` untuk WIB). Dipakai untuk batas hari lokal, `completed_today`, dan streak. Default `0` |
 | `X-Request-ID` | Request | Tidak | ID korelasi untuk log |
 | `Content-Type: application/json` | Response | Ya | Semua respons JSON |
 
@@ -59,7 +60,7 @@ Semua error memakai bentuk yang sama:
 
 - Semua timestamp: ISO 8601 UTC dengan sufiks `Z`, contoh `2026-10-19T09:30:00Z`.
 - Tanggal (tanpa waktu): `YYYY-MM-DD`.
-- Klien bertanggung jawab mengonversi ke zona waktu lokal untuk tampilan.
+- Klien mengirim `X-Timezone-Offset` (menit dari UTC) agar backend menghitung hari kalender lokal. Tanpa header, backend memakai offset default server.
 
 ### 1.5 Paginasi
 
@@ -714,7 +715,7 @@ class TaskComplete(BaseModel):
 | Aturan | Implementasi |
 |---|---|
 | `title` tidak hanya spasi | `field_validator` melakukan `strip()` lalu cek kosong |
-| `due_time` di masa depan (create) | `field_validator` membandingkan dengan `datetime.now(timezone.utc)` |
+| `due_time` di masa depan (create & update) | `field_validator` membandingkan dengan `datetime.now(timezone.utc)`; update tetap mengizinkan tenggat lampau hanya untuk tugas yang sudah selesai |
 | `name` tidak hanya spasi | Sama seperti `title` |
 
 ---
@@ -724,7 +725,7 @@ class TaskComplete(BaseModel):
 | Kebutuhan | Implementasi |
 |---|---|
 | Menyimpan JWT | `flutter_secure_storage` |
-| Menambahkan header | Interceptor `Authorization: Bearer <token>` |
+| Menambahkan header | Interceptor `Authorization: Bearer <token>` dan `X-Timezone-Offset` (dari offset zona waktu perangkat) |
 | Menangani 401 | Hapus token, arahkan ke Login, tampilkan pesan sesi berakhir |
 | Menangani error jaringan | Tampilkan pesan + tombol "Coba lagi"; jangan crash |
 | Format tanggal | Parse ISO 8601 UTC, konversi ke `toLocal()` |

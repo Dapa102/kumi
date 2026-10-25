@@ -19,19 +19,19 @@ router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 def google_login(payload: GoogleAuthRequest, db: Session = Depends(get_db)) -> AuthResponse:
     try:
         info = verify_google_token(payload.id_token)
-    except EmailNotVerified:
+    except EmailNotVerified as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={
                 "code": "EMAIL_NOT_VERIFIED",
                 "message": "Email Google belum terverifikasi.",
             },
-        )
-    except InvalidGoogleToken:
+        ) from exc
+    except InvalidGoogleToken as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={"code": "INVALID_GOOGLE_TOKEN", "message": "Token Google tidak valid."},
-        )
+        ) from exc
 
     user = db.scalar(select(User).where(User.google_id == info.google_id))
     is_new_user = user is None

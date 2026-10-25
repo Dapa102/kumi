@@ -1,4 +1,4 @@
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -28,10 +28,10 @@ def get_current_user(
 
     try:
         user_id = decode_access_token(credentials.credentials)
-    except TokenExpired:
-        raise _unauthorized("TOKEN_EXPIRED", "Sesi berakhir, silakan masuk kembali.")
-    except InvalidToken:
-        raise _unauthorized("UNAUTHORIZED", "Autentikasi diperlukan.")
+    except TokenExpired as exc:
+        raise _unauthorized("TOKEN_EXPIRED", "Sesi berakhir, silakan masuk kembali.") from exc
+    except InvalidToken as exc:
+        raise _unauthorized("UNAUTHORIZED", "Autentikasi diperlukan.") from exc
 
     user = db.get(User, user_id)
     if user is None:
@@ -40,4 +40,4 @@ def get_current_user(
 
 
 def utc_today() -> date:
-    return datetime.now(timezone.utc).date()
+    return datetime.now(UTC).date()

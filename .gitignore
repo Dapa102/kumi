@@ -1,7 +1,28 @@
+# Environment (never commit real secrets)
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Logs & backups
+*.log
+*.sql.gz
+backup*.sql
+
 # Miscellaneous
 *.class
-*.log
-*.pyc
 *.swp
 .DS_Store
 .atom/

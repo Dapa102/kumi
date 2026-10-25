@@ -34,10 +34,8 @@ class KumiSpeechBubble extends StatelessWidget {
           text,
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-                height: 1.4,
-              ),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(fontWeight: FontWeight.w500, height: 1.4),
         ),
       ),
     );
@@ -77,10 +75,7 @@ class KumiMascotCard extends StatelessWidget {
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
             child: showBubble && dialogText != null
-                ? KumiSpeechBubble(
-                    key: ValueKey(dialogText),
-                    text: dialogText!,
-                  )
+                ? KumiSpeechBubble(key: ValueKey(dialogText), text: dialogText!)
                 : const SizedBox(height: 4),
           ),
         ],

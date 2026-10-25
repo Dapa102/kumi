@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from app.services.security import create_access_token, decode_access_token
 
@@ -39,9 +39,7 @@ def test_profile_requires_token(client):
 
 
 def test_profile_rejects_bad_token(client):
-    response = client.get(
-        "/api/v1/user/profile", headers={"Authorization": "Bearer not-a-token"}
-    )
+    response = client.get("/api/v1/user/profile", headers={"Authorization": "Bearer not-a-token"})
     assert response.status_code == 401
     assert response.json()["detail"]["code"] == "UNAUTHORIZED"
 
@@ -54,15 +52,13 @@ def test_profile_rejects_expired_token(client, user):
     expired = jwt.encode(
         {
             "sub": str(user.id),
-            "iat": datetime.now(timezone.utc) - timedelta(hours=1),
-            "exp": datetime(2020, 1, 1, tzinfo=timezone.utc),
+            "iat": datetime.now(UTC) - timedelta(hours=1),
+            "exp": datetime(2020, 1, 1, tzinfo=UTC),
         },
         settings.jwt_secret,
         algorithm=settings.jwt_algorithm,
     )
-    response = client.get(
-        "/api/v1/user/profile", headers={"Authorization": f"Bearer {expired}"}
-    )
+    response = client.get("/api/v1/user/profile", headers={"Authorization": f"Bearer {expired}"})
     assert response.status_code == 401
     assert response.json()["detail"]["code"] == "TOKEN_EXPIRED"
 
@@ -74,8 +70,6 @@ def test_token_roundtrip(user):
 
 
 def test_google_login_rejects_invalid_token(client):
-    response = client.post(
-        "/api/v1/auth/google", json={"id_token": "x" * 40}
-    )
+    response = client.post("/api/v1/auth/google", json={"id_token": "x" * 40})
     assert response.status_code == 401
     assert response.json()["detail"]["code"] == "INVALID_GOOGLE_TOKEN"

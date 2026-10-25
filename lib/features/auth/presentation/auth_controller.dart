@@ -26,7 +26,9 @@ class AuthController extends ChangeNotifier {
     await _repository.restoreToken();
     final hasSession = await _repository.hasStoredSession();
     _userName = await _storage.readUserName();
-    _status = hasSession ? AuthStatus.authenticated : AuthStatus.unauthenticated;
+    _status = hasSession
+        ? AuthStatus.authenticated
+        : AuthStatus.unauthenticated;
     notifyListeners();
   }
 

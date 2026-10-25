@@ -101,11 +101,7 @@ class _KumiMascotState extends State<KumiMascot> with TickerProviderStateMixin {
       child: GestureDetector(
         onTap: _handleTap,
         behavior: HitTestBehavior.opaque,
-        child: SizedBox(
-          width: widget.size,
-          height: widget.size,
-          child: mascot,
-        ),
+        child: SizedBox(width: widget.size, height: widget.size, child: mascot),
       ),
     );
   }
@@ -163,8 +159,16 @@ class _FoxPainter extends CustomPainter {
         ..color = AppColors.secondary
         ..strokeWidth = w * 0.014
         ..strokeCap = StrokeCap.round;
-      canvas.drawLine(Offset(w * 0.34, h * 0.46), Offset(w * 0.42, h * 0.46), stroke);
-      canvas.drawLine(Offset(w * 0.58, h * 0.46), Offset(w * 0.66, h * 0.46), stroke);
+      canvas.drawLine(
+        Offset(w * 0.34, h * 0.46),
+        Offset(w * 0.42, h * 0.46),
+        stroke,
+      );
+      canvas.drawLine(
+        Offset(w * 0.58, h * 0.46),
+        Offset(w * 0.66, h * 0.46),
+        stroke,
+      );
     } else if (mood == KumiMood.happy) {
       final stroke = Paint()
         ..color = AppColors.secondary
@@ -172,14 +176,22 @@ class _FoxPainter extends CustomPainter {
         ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke;
       canvas.drawArc(
-        Rect.fromCenter(center: Offset(w * 0.38, h * 0.47), width: w * 0.09, height: h * 0.07),
+        Rect.fromCenter(
+          center: Offset(w * 0.38, h * 0.47),
+          width: w * 0.09,
+          height: h * 0.07,
+        ),
         math.pi,
         math.pi,
         false,
         stroke,
       );
       canvas.drawArc(
-        Rect.fromCenter(center: Offset(w * 0.62, h * 0.47), width: w * 0.09, height: h * 0.07),
+        Rect.fromCenter(
+          center: Offset(w * 0.62, h * 0.47),
+          width: w * 0.09,
+          height: h * 0.07,
+        ),
         math.pi,
         math.pi,
         false,
@@ -205,5 +217,6 @@ class _FoxPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _FoxPainter oldDelegate) => oldDelegate.mood != mood;
+  bool shouldRepaint(covariant _FoxPainter oldDelegate) =>
+      oldDelegate.mood != mood;
 }

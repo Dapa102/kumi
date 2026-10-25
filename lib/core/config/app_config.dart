@@ -99,11 +99,15 @@ ThemeData buildAppTheme() {
       fillColor: AppColors.surfaceAlt,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadius.button),
-        borderSide: BorderSide(color: AppColors.secondary.withValues(alpha: 0.15)),
+        borderSide: BorderSide(
+          color: AppColors.secondary.withValues(alpha: 0.15),
+        ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadius.button),
-        borderSide: BorderSide(color: AppColors.secondary.withValues(alpha: 0.15)),
+        borderSide: BorderSide(
+          color: AppColors.secondary.withValues(alpha: 0.15),
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadius.button),

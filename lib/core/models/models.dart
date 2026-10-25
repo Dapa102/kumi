@@ -54,10 +54,10 @@ class AuthResult {
   final UserProfile user;
 
   factory AuthResult.fromJson(Map<String, dynamic> json) => AuthResult(
-        accessToken: json['access_token'] as String,
-        isNewUser: json['is_new_user'] as bool? ?? false,
-        user: UserProfile.fromJson(json['user'] as Map<String, dynamic>),
-      );
+    accessToken: json['access_token'] as String,
+    isNewUser: json['is_new_user'] as bool? ?? false,
+    user: UserProfile.fromJson(json['user'] as Map<String, dynamic>),
+  );
 }
 
 class TaskItem {
@@ -85,15 +85,15 @@ class TaskItem {
   }
 
   factory TaskItem.fromJson(Map<String, dynamic> json) => TaskItem(
-        id: json['id'] as int,
-        title: json['title'] as String,
-        description: json['description'] as String?,
-        dueTime: DateTime.parse(json['due_time'] as String).toLocal(),
-        isCompleted: json['is_completed'] as bool? ?? false,
-        completedAt: json['completed_at'] == null
-            ? null
-            : DateTime.parse(json['completed_at'] as String).toLocal(),
-      );
+    id: json['id'] as int,
+    title: json['title'] as String,
+    description: json['description'] as String?,
+    dueTime: DateTime.parse(json['due_time'] as String).toLocal(),
+    isCompleted: json['is_completed'] as bool? ?? false,
+    completedAt: json['completed_at'] == null
+        ? null
+        : DateTime.parse(json['completed_at'] as String).toLocal(),
+  );
 }
 
 class Achievement {
@@ -116,16 +116,16 @@ class Achievement {
   final DateTime? earnedAt;
 
   factory Achievement.fromJson(Map<String, dynamic> json) => Achievement(
-        id: json['id'] as int,
-        code: json['code'] as String,
-        name: json['name'] as String,
-        description: json['description'] as String,
-        icon: json['icon'] as String? ?? 'badge',
-        earned: json['earned'] as bool? ?? false,
-        earnedAt: json['earned_at'] == null
-            ? null
-            : DateTime.parse(json['earned_at'] as String).toLocal(),
-      );
+    id: json['id'] as int,
+    code: json['code'] as String,
+    name: json['name'] as String,
+    description: json['description'] as String,
+    icon: json['icon'] as String? ?? 'badge',
+    earned: json['earned'] as bool? ?? false,
+    earnedAt: json['earned_at'] == null
+        ? null
+        : DateTime.parse(json['earned_at'] as String).toLocal(),
+  );
 }
 
 class GamificationResult {
@@ -139,13 +139,17 @@ class GamificationResult {
   final bool streakIncreased;
   final List<Achievement> newAchievements;
 
-  factory GamificationResult.fromJson(Map<String, dynamic> json) => GamificationResult(
+  factory GamificationResult.fromJson(Map<String, dynamic> json) =>
+      GamificationResult(
         currentStreak: json['current_streak'] as int? ?? 0,
         streakIncreased: json['streak_increased'] as bool? ?? false,
         newAchievements: (json['new_achievements'] as List<dynamic>? ?? [])
-            .map((item) => Achievement.fromJson(
-                  {...item as Map<String, dynamic>, 'earned': true},
-                ))
+            .map(
+              (item) => Achievement.fromJson({
+                ...item as Map<String, dynamic>,
+                'earned': true,
+              }),
+            )
             .toList(),
       );
 }
@@ -156,7 +160,8 @@ class CompleteTaskResult {
   final TaskItem task;
   final GamificationResult gamification;
 
-  factory CompleteTaskResult.fromJson(Map<String, dynamic> json) => CompleteTaskResult(
+  factory CompleteTaskResult.fromJson(Map<String, dynamic> json) =>
+      CompleteTaskResult(
         task: TaskItem.fromJson(json),
         gamification: GamificationResult.fromJson(
           json['gamification'] as Map<String, dynamic>? ?? const {},
@@ -165,15 +170,19 @@ class CompleteTaskResult {
 }
 
 class KumiDialog {
-  const KumiDialog({required this.id, required this.context, required this.text});
+  const KumiDialog({
+    required this.id,
+    required this.context,
+    required this.text,
+  });
 
   final int id;
   final String context;
   final String text;
 
   factory KumiDialog.fromJson(Map<String, dynamic> json) => KumiDialog(
-        id: json['id'] as int,
-        context: json['context'] as String,
-        text: json['text'] as String,
-      );
+    id: json['id'] as int,
+    context: json['context'] as String,
+    text: json['text'] as String,
+  );
 }

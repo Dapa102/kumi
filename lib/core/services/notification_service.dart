@@ -9,7 +9,7 @@ import '../models/models.dart';
 /// Notifications live entirely on the device; no server push involved.
 class NotificationService {
   NotificationService({FlutterLocalNotificationsPlugin? plugin})
-      : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
+    : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   static const int _reminderOffsetMinutes = 15;
   static const String _channelId = 'kumi_task_reminders';
@@ -45,16 +45,25 @@ class NotificationService {
   Future<bool> requestPermission() async {
     await initialize();
 
-    final android = _plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
     if (android != null) {
       return await android.requestNotificationsPermission() ?? false;
     }
 
-    final ios = _plugin.resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>();
+    final ios = _plugin
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
     if (ios != null) {
-      return await ios.requestPermissions(alert: true, badge: true, sound: true) ?? false;
+      return await ios.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          ) ??
+          false;
     }
     return true;
   }
@@ -66,7 +75,9 @@ class NotificationService {
     }
 
     await initialize();
-    final scheduled = task.dueTime.subtract(const Duration(minutes: _reminderOffsetMinutes));
+    final scheduled = task.dueTime.subtract(
+      const Duration(minutes: _reminderOffsetMinutes),
+    );
     if (scheduled.isBefore(DateTime.now())) return;
 
     const details = NotificationDetails(

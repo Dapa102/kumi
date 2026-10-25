@@ -29,8 +29,8 @@ class NetworkException implements Exception {
 
 class ApiClient {
   ApiClient({http.Client? client, String? baseUrl})
-      : _client = client ?? http.Client(),
-        _baseUrl = baseUrl ?? AppConfig.apiBaseUrl;
+    : _client = client ?? http.Client(),
+      _baseUrl = baseUrl ?? AppConfig.apiBaseUrl;
 
   final http.Client _client;
   final String _baseUrl;
@@ -58,21 +58,33 @@ class ApiClient {
   Future<dynamic> post(String path, {Object? body}) async {
     final uri = Uri.parse('$_baseUrl$path');
     return _send(
-      () => _client.post(uri, headers: _headers(), body: body == null ? null : jsonEncode(body)),
+      () => _client.post(
+        uri,
+        headers: _headers(),
+        body: body == null ? null : jsonEncode(body),
+      ),
     );
   }
 
   Future<dynamic> put(String path, {Object? body}) async {
     final uri = Uri.parse('$_baseUrl$path');
     return _send(
-      () => _client.put(uri, headers: _headers(), body: body == null ? null : jsonEncode(body)),
+      () => _client.put(
+        uri,
+        headers: _headers(),
+        body: body == null ? null : jsonEncode(body),
+      ),
     );
   }
 
   Future<dynamic> patch(String path, {Object? body}) async {
     final uri = Uri.parse('$_baseUrl$path');
     return _send(
-      () => _client.patch(uri, headers: _headers(), body: body == null ? null : jsonEncode(body)),
+      () => _client.patch(
+        uri,
+        headers: _headers(),
+        body: body == null ? null : jsonEncode(body),
+      ),
     );
   }
 
@@ -108,7 +120,9 @@ class ApiClient {
     if (detail is Map<String, dynamic>) {
       final rawFields = detail['fields'];
       final fields = rawFields is Map
-          ? rawFields.map((key, value) => MapEntry(key.toString(), value.toString()))
+          ? rawFields.map(
+              (key, value) => MapEntry(key.toString(), value.toString()),
+            )
           : null;
       throw ApiException(
         response.statusCode,
@@ -118,6 +132,10 @@ class ApiClient {
       );
     }
 
-    throw ApiException(response.statusCode, 'ERROR', 'Terjadi kesalahan. Coba lagi.');
+    throw ApiException(
+      response.statusCode,
+      'ERROR',
+      'Terjadi kesalahan. Coba lagi.',
+    );
   }
 }

@@ -26,7 +26,10 @@ class AuthRepository {
       throw const NetworkException('ID Token Google tidak tersedia.');
     }
 
-    final response = await _api.post('/api/v1/auth/google', body: {'id_token': idToken});
+    final response = await _api.post(
+      '/api/v1/auth/google',
+      body: {'id_token': idToken},
+    );
     final result = AuthResult.fromJson(response as Map<String, dynamic>);
 
     await _storage.saveToken(result.accessToken);

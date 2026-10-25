@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from fastapi.testclient import TestClient
 
 
 def _future(days: int = 1) -> str:
-    return (datetime.now(timezone.utc) + timedelta(days=days)).isoformat().replace("+00:00", "Z")
+    return (datetime.now(UTC) + timedelta(days=days)).isoformat().replace("+00:00", "Z")
 
 
 def _create(client: TestClient, headers: dict, title: str = "Revisi Bab 3") -> dict:
@@ -30,7 +30,7 @@ def test_create_task_rejects_blank_title(client, auth_headers):
 
 
 def test_create_task_rejects_past_due_time(client, auth_headers):
-    past = (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat().replace("+00:00", "Z")
+    past = (datetime.now(UTC) - timedelta(hours=1)).isoformat().replace("+00:00", "Z")
     response = client.post(
         "/api/v1/tasks", json={"title": "Telat", "due_time": past}, headers=auth_headers
     )
@@ -73,7 +73,11 @@ def test_update_task(client, auth_headers):
     task = _create(client, auth_headers)
     response = client.put(
         f"/api/v1/tasks/{task['id']}",
-        json={"title": "Revisi Bab 3 dan 4", "description": "Tambah hasil uji", "due_time": _future(2)},
+        json={
+            "title": "Revisi Bab 3 dan 4",
+            "description": "Tambah hasil uji",
+            "due_time": _future(2),
+        },
         headers=auth_headers,
     )
     assert response.status_code == 200

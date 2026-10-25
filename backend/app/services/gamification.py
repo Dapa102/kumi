@@ -7,9 +7,12 @@ from app.models import Achievement, Task, User, UserAchievement, utcnow
 
 
 def completed_tasks_count(db: Session, user_id: int) -> int:
-    return db.scalar(
-        select(func.count(Task.id)).where(Task.user_id == user_id, Task.is_completed.is_(True))
-    ) or 0
+    return (
+        db.scalar(
+            select(func.count(Task.id)).where(Task.user_id == user_id, Task.is_completed.is_(True))
+        )
+        or 0
+    )
 
 
 def recalculate_streak(db: Session, user: User, today: date | None = None) -> bool:
@@ -69,20 +72,12 @@ def evaluate_achievements(db: Session, user: User) -> list[tuple[Achievement, da
         if achievement.id in earned:
             continue
 
-        value = (
-            total_completed
-            if achievement.criteria_type == "total_completed"
-            else streak
-        )
+        value = total_completed if achievement.criteria_type == "total_completed" else streak
         if value < achievement.criteria_value:
             continue
 
         now = utcnow()
-        db.add(
-            UserAchievement(
-                user_id=user.id, achievement_id=achievement.id, earned_at=now
-            )
-        )
+        db.add(UserAchievement(user_id=user.id, achievement_id=achievement.id, earned_at=now))
         earned.add(achievement.id)
         awarded.append((achievement, now))
 

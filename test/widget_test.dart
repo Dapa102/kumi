@@ -64,10 +64,10 @@ void main() {
 
   testWidgets('AchievementTile shows lock when not earned', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: Scaffold(
           body: AchievementTile(
-            achievement: const Achievement(
+            achievement: Achievement(
               id: 1,
               code: 'streak_7',
               name: 'Seminggu Konsisten',

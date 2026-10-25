@@ -51,14 +51,18 @@ class TaskCard extends StatelessWidget {
           child: Row(
             children: [
               Semantics(
-                label: task.isCompleted ? 'Tandai belum selesai' : 'Tandai selesai',
+                label: task.isCompleted
+                    ? 'Tandai belum selesai'
+                    : 'Tandai selesai',
                 child: IconButton(
                   onPressed: onToggle,
                   icon: Icon(
                     task.isCompleted
                         ? Icons.check_circle_rounded
                         : Icons.radio_button_unchecked_rounded,
-                    color: task.isCompleted ? AppColors.accent : AppColors.muted,
+                    color: task.isCompleted
+                        ? AppColors.accent
+                        : AppColors.muted,
                   ),
                   tooltip: task.isCompleted ? 'Belum selesai' : 'Selesai',
                 ),
@@ -73,8 +77,12 @@ class TaskCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w600,
-                        decoration: task.isCompleted ? TextDecoration.lineThrough : null,
-                        color: task.isCompleted ? AppColors.muted : AppColors.secondary,
+                        decoration: task.isCompleted
+                            ? TextDecoration.lineThrough
+                            : null,
+                        color: task.isCompleted
+                            ? AppColors.muted
+                            : AppColors.secondary,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -96,7 +104,10 @@ class TaskCard extends StatelessWidget {
                     if (onEdit != null)
                       const PopupMenuItem(value: 'edit', child: Text('Edit')),
                     if (onDelete != null)
-                      const PopupMenuItem(value: 'delete', child: Text('Hapus')),
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: Text('Hapus'),
+                      ),
                   ],
                 ),
             ],
@@ -130,16 +141,15 @@ class DailyProgressBar extends StatelessWidget {
           children: [
             Text(
               'Hari ini',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.w600),
             ),
             Text(
               '$completed / $total',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: isFull ? AppColors.accent : AppColors.secondary,
-                  ),
+                fontWeight: FontWeight.w600,
+                color: isFull ? AppColors.accent : AppColors.secondary,
+              ),
             ),
           ],
         ),
@@ -167,7 +177,8 @@ class DailyProgressBar extends StatelessWidget {
             padding: const EdgeInsets.only(top: AppSpacing.sm),
             child: Text(
               'Belum ada tugas hari ini',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.muted),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: AppColors.muted),
             ),
           ),
       ],
@@ -198,7 +209,9 @@ class StatCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surfaceAlt,
           borderRadius: BorderRadius.circular(AppRadius.card),
-          border: Border.all(color: AppColors.secondary.withValues(alpha: 0.08)),
+          border: Border.all(
+            color: AppColors.secondary.withValues(alpha: 0.08),
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,13 +220,13 @@ class StatCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             Text(
               value,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(context).textTheme.headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
             Text(
               label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.muted),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: AppColors.muted),
             ),
           ],
         ),
@@ -229,7 +242,9 @@ class AchievementTile extends StatelessWidget {
   final VoidCallback? onTap;
 
   IconData get _icon {
-    if (achievement.code.startsWith('streak')) return Icons.local_fire_department_rounded;
+    if (achievement.code.startsWith('streak')) {
+      return Icons.local_fire_department_rounded;
+    }
     return Icons.military_tech_rounded;
   }
 
@@ -265,9 +280,9 @@ class AchievementTile extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: earned ? AppColors.secondary : AppColors.muted,
-                  ),
+                fontWeight: FontWeight.w600,
+                color: earned ? AppColors.secondary : AppColors.muted,
+              ),
             ),
           ],
         ),
@@ -307,16 +322,16 @@ class EmptyState extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: Theme.of(context).textTheme.bodyLarge
+                  ?.copyWith(fontWeight: FontWeight.w600),
             ),
             if (message != null) ...[
               const SizedBox(height: AppSpacing.xs),
               Text(
                 message!,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.muted),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: AppColors.muted),
               ),
             ],
             if (actionLabel != null && onAction != null) ...[
@@ -350,7 +365,8 @@ class ErrorRetry extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.danger),
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: AppColors.danger),
           ),
           const SizedBox(height: AppSpacing.sm),
           TextButton(onPressed: onRetry, child: const Text('Coba lagi')),

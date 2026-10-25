@@ -1,5 +1,5 @@
-from datetime import datetime, timezone
 import random
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
@@ -31,7 +31,7 @@ def get_dialog(
     del current_user  # auth is required, dialog content is not user specific
 
     if context is None:
-        context = _context_from_hour(datetime.now(timezone.utc).hour)
+        context = _context_from_hour(datetime.now(UTC).hour)
 
     if context not in DIALOG_CONTEXTS:
         raise HTTPException(
@@ -39,16 +39,12 @@ def get_dialog(
             detail={
                 "code": "VALIDATION_ERROR",
                 "message": "Data tidak valid.",
-                "fields": {
-                    "context": "Nilai harus salah satu dari: " + ", ".join(DIALOG_CONTEXTS)
-                },
+                "fields": {"context": "Nilai harus salah satu dari: " + ", ".join(DIALOG_CONTEXTS)},
             },
         )
 
     candidates = db.scalars(
-        select(KumiDialog).where(
-            KumiDialog.context == context, KumiDialog.is_active.is_(True)
-        )
+        select(KumiDialog).where(KumiDialog.context == context, KumiDialog.is_active.is_(True))
     ).all()
 
     if not candidates:

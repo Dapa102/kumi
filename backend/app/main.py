@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -13,6 +13,7 @@ from app.config import cors_origin_list, settings
 from app.database import Base, SessionLocal, engine
 from app.routers import achievements, auth, kumi, tasks, user
 from app.schemas import HealthOut
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -68,9 +69,7 @@ async def validation_exception_handler(
 async def database_exception_handler(request: Request, exc: SQLAlchemyError) -> JSONResponse:
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={
-            "detail": {"code": "INTERNAL_ERROR", "message": "Terjadi kesalahan pada server."}
-        },
+        content={"detail": {"code": "INTERNAL_ERROR", "message": "Terjadi kesalahan pada server."}},
     )
 
 
@@ -91,7 +90,7 @@ def health() -> JSONResponse:
         status="ok" if db_status == "ok" else "degraded",
         database=db_status,
         version=settings.app_version,
-        time=datetime.now(timezone.utc),
+        time=datetime.now(UTC),
     )
     code = status.HTTP_200_OK if db_status == "ok" else status.HTTP_503_SERVICE_UNAVAILABLE
     return JSONResponse(status_code=code, content=payload.model_dump(mode="json"))

@@ -6,7 +6,10 @@ class TaskRepository {
 
   final ApiClient _api;
 
-  Future<List<TaskItem>> fetchTasks({DateTime? date, String status = 'all'}) async {
+  Future<List<TaskItem>> fetchTasks({
+    DateTime? date,
+    String status = 'all',
+  }) async {
     final query = <String, String>{'status': status, 'limit': '100'};
     if (date != null) {
       final iso = date.toIso8601String().split('T').first;
@@ -15,7 +18,9 @@ class TaskRepository {
 
     final response = await _api.get('/api/v1/tasks', query: query);
     final items = (response as Map<String, dynamic>)['items'] as List<dynamic>;
-    return items.map((item) => TaskItem.fromJson(item as Map<String, dynamic>)).toList();
+    return items
+        .map((item) => TaskItem.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 
   Future<TaskItem> createTask({
@@ -23,11 +28,14 @@ class TaskRepository {
     String? description,
     required DateTime dueTime,
   }) async {
-    final response = await _api.post('/api/v1/tasks', body: {
-      'title': title,
-      'description': description,
-      'due_time': dueTime.toUtc().toIso8601String(),
-    });
+    final response = await _api.post(
+      '/api/v1/tasks',
+      body: {
+        'title': title,
+        'description': description,
+        'due_time': dueTime.toUtc().toIso8601String(),
+      },
+    );
     return TaskItem.fromJson(response as Map<String, dynamic>);
   }
 
@@ -37,11 +45,14 @@ class TaskRepository {
     String? description,
     required DateTime dueTime,
   }) async {
-    final response = await _api.put('/api/v1/tasks/$id', body: {
-      'title': title,
-      'description': description,
-      'due_time': dueTime.toUtc().toIso8601String(),
-    });
+    final response = await _api.put(
+      '/api/v1/tasks/$id',
+      body: {
+        'title': title,
+        'description': description,
+        'due_time': dueTime.toUtc().toIso8601String(),
+      },
+    );
     return TaskItem.fromJson(response as Map<String, dynamic>);
   }
 
@@ -58,21 +69,32 @@ class TaskRepository {
   }
 
   Future<UserProfile> updateName(String name) async {
-    final response = await _api.put('/api/v1/user/profile', body: {'name': name});
+    final response = await _api.put(
+      '/api/v1/user/profile',
+      body: {'name': name},
+    );
     return UserProfile.fromJson(response as Map<String, dynamic>);
   }
 
   Future<List<Achievement>> fetchAchievements() async {
     final response = await _api.get('/api/v1/achievements');
     final items = (response as Map<String, dynamic>)['items'] as List<dynamic>;
-    return items.map((item) => Achievement.fromJson(item as Map<String, dynamic>)).toList();
+    return items
+        .map((item) => Achievement.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 
-  Future<KumiDialog> fetchDialog({required String context, int? excludeId}) async {
-    final response = await _api.get('/api/v1/kumi/dialog', query: {
-      'context': context,
-      if (excludeId != null) 'exclude_id': '$excludeId',
-    });
+  Future<KumiDialog> fetchDialog({
+    required String context,
+    int? excludeId,
+  }) async {
+    final response = await _api.get(
+      '/api/v1/kumi/dialog',
+      query: {
+        'context': context,
+        if (excludeId != null) 'exclude_id': '$excludeId',
+      },
+    );
     return KumiDialog.fromJson(response as Map<String, dynamic>);
   }
 }

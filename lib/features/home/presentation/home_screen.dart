@@ -49,22 +49,24 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.military_tech_rounded, size: 56, color: AppColors.primary),
+              const Icon(
+                Icons.military_tech_rounded,
+                size: 56,
+                color: AppColors.primary,
+              ),
               const SizedBox(height: AppSpacing.md),
               Text(
                 'Badge baru: ${achievement.name}',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(context).textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 achievement.description,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.muted,
-                    ),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: AppColors.muted),
               ),
             ],
           ),
@@ -99,15 +101,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Text(
                           'Hai, ${profile?.name.split(' ').first ?? 'teman'}',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         Text(
                           DateFormat('EEEE, d MMMM', 'id_ID').format(now),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: AppColors.muted,
-                              ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppColors.muted),
                         ),
                       ],
                     ),
@@ -140,7 +140,10 @@ class _HomeScreenState extends State<HomeScreen> {
               if (controller.error != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: ErrorRetry(message: controller.error!, onRetry: controller.load),
+                  child: ErrorRetry(
+                    message: controller.error!,
+                    onRetry: controller.load,
+                  ),
                 ),
               KumiMascotCard(
                 dialogText: controller.dialogText,
@@ -162,9 +165,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     'Jadwal berikutnya',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   TextButton(
                     onPressed: () => context.go('/tasks'),

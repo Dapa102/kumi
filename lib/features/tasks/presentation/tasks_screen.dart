@@ -73,7 +73,11 @@ class _TasksScreenState extends State<TasksScreen> {
     final ok = await context.read<TasksController>().deleteTask(task);
     if (!ok && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.read<TasksController>().error ?? 'Gagal menghapus.')),
+        SnackBar(
+          content: Text(
+            context.read<TasksController>().error ?? 'Gagal menghapus.',
+          ),
+        ),
       );
     }
   }
@@ -97,22 +101,24 @@ class _TasksScreenState extends State<TasksScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.military_tech_rounded, size: 56, color: AppColors.primary),
+              const Icon(
+                Icons.military_tech_rounded,
+                size: 56,
+                color: AppColors.primary,
+              ),
               const SizedBox(height: AppSpacing.md),
               Text(
                 'Badge baru: ${achievement.name}',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(context).textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 achievement.description,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.muted,
-                    ),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: AppColors.muted),
               ),
             ],
           ),
@@ -136,7 +142,10 @@ class _TasksScreenState extends State<TasksScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<TasksController>();
-    final isToday = DateUtils.isSameDay(controller.selectedDate, DateTime.now());
+    final isToday = DateUtils.isSameDay(
+      controller.selectedDate,
+      DateTime.now(),
+    );
 
     return Scaffold(
       body: SafeArea(
@@ -154,17 +163,20 @@ class _TasksScreenState extends State<TasksScreen> {
                 children: [
                   Text(
                     'Tugas',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: Theme.of(context).textTheme.headlineSmall
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.surfaceAlt,
                       borderRadius: BorderRadius.circular(AppRadius.button),
-                      border: Border.all(color: AppColors.secondary.withValues(alpha: 0.1)),
+                      border: Border.all(
+                        color: AppColors.secondary.withValues(alpha: 0.1),
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -179,8 +191,13 @@ class _TasksScreenState extends State<TasksScreen> {
                             child: Text(
                               isToday
                                   ? 'Hari ini, ${DateFormat('d MMM', 'id_ID').format(controller.selectedDate)}'
-                                  : DateFormat('d MMM yyyy', 'id_ID').format(controller.selectedDate),
-                              style: const TextStyle(fontWeight: FontWeight.w600),
+                                  : DateFormat(
+                                      'd MMM yyyy',
+                                      'id_ID',
+                                    ).format(controller.selectedDate),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
@@ -209,7 +226,8 @@ class _TasksScreenState extends State<TasksScreen> {
                       _FilterChip(
                         label: 'Selesai',
                         selected: controller.statusFilter == 'completed',
-                        onSelected: () => controller.setStatusFilter('completed'),
+                        onSelected: () =>
+                            controller.setStatusFilter('completed'),
                       ),
                     ],
                   ),
@@ -244,7 +262,9 @@ class _TasksScreenState extends State<TasksScreen> {
     if (controller.error != null && controller.tasks.isEmpty) {
       return ListView(
         padding: const EdgeInsets.all(AppSpacing.screenPadding),
-        children: [ErrorRetry(message: controller.error!, onRetry: controller.load)],
+        children: [
+          ErrorRetry(message: controller.error!, onRetry: controller.load),
+        ],
       );
     }
 
@@ -271,7 +291,9 @@ class _TasksScreenState extends State<TasksScreen> {
       ),
       children: [
         if (controller.pendingTasks.isNotEmpty) ...[
-          _SectionHeader(label: 'BELUM SELESAI (${controller.pendingTasks.length})'),
+          _SectionHeader(
+            label: 'BELUM SELESAI (${controller.pendingTasks.length})',
+          ),
           ...controller.pendingTasks.map(
             (task) => Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -299,7 +321,9 @@ class _TasksScreenState extends State<TasksScreen> {
           ),
         ],
         if (controller.completedTasks.isNotEmpty) ...[
-          _SectionHeader(label: 'SELESAI (${controller.completedTasks.length})'),
+          _SectionHeader(
+            label: 'SELESAI (${controller.completedTasks.length})',
+          ),
           ...controller.completedTasks.map(
             (task) => Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -335,7 +359,9 @@ class _TasksScreenState extends State<TasksScreen> {
       alignment: alignEnd ? Alignment.centerRight : Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
       decoration: BoxDecoration(
-        color: (alignEnd ? AppColors.danger : AppColors.accent).withValues(alpha: 0.12),
+        color: (alignEnd ? AppColors.danger : AppColors.accent).withValues(
+          alpha: 0.12,
+        ),
         borderRadius: BorderRadius.circular(AppRadius.card),
       ),
       child: Icon(
@@ -390,10 +416,10 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.6,
-              color: AppColors.muted,
-            ),
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.6,
+          color: AppColors.muted,
+        ),
       ),
     );
   }

@@ -31,7 +31,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _editName() async {
     final controller = context.read<ProfileController>();
-    final textController = TextEditingController(text: controller.profile?.name ?? '');
+    final textController = TextEditingController(
+      text: controller.profile?.name ?? '',
+    );
     final formKey = GlobalKey<FormState>();
 
     final saved = await showDialog<bool>(
@@ -128,26 +130,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: AppSpacing.md),
             Text(
               achievement.name,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               achievement.description,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.muted,
-                  ),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: AppColors.muted),
             ),
             if (achievement.earnedAt != null) ...[
               const SizedBox(height: AppSpacing.sm),
               Text(
                 'Diraih ${DateFormat('d MMM yyyy', 'id_ID').format(achievement.earnedAt!)}',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.accent,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  color: AppColors.accent,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ],
@@ -175,9 +175,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Text(
                 'Profil',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(context).textTheme.headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: AppSpacing.xl),
               if (controller.loading && profile == null)
@@ -210,16 +209,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   profile?.name ?? '-',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: Theme.of(context).textTheme.titleLarge
+                      ?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 Text(
                   profile?.email ?? '-',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.muted,
-                      ),
+                  style: Theme.of(context).textTheme.bodySmall
+                      ?.copyWith(color: AppColors.muted),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Center(
@@ -250,15 +247,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     Text(
                       'Achievement',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                      style: Theme.of(context).textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     Text(
                       '${controller.earnedCount} / ${controller.achievements.length}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.muted,
-                          ),
+                      style: Theme.of(context).textTheme.bodySmall
+                          ?.copyWith(color: AppColors.muted),
                     ),
                   ],
                 ),
@@ -272,12 +267,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: AppSpacing.sm,
-                      crossAxisSpacing: AppSpacing.sm,
-                      childAspectRatio: 0.95,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: AppSpacing.sm,
+                          crossAxisSpacing: AppSpacing.sm,
+                          childAspectRatio: 0.95,
+                        ),
                     itemCount: controller.achievements.length,
                     itemBuilder: (context, index) {
                       final achievement = controller.achievements[index];
@@ -293,7 +289,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size.fromHeight(52),
                     foregroundColor: AppColors.danger,
-                    side: BorderSide(color: AppColors.danger.withValues(alpha: 0.4)),
+                    side: BorderSide(
+                      color: AppColors.danger.withValues(alpha: 0.4),
+                    ),
                   ),
                   child: const Text('Keluar'),
                 ),

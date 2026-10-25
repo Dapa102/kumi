@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import (
     BigInteger,
@@ -21,7 +21,7 @@ CRITERIA_TYPES = ("total_completed", "streak")
 
 
 def utcnow() -> datetime:
-    return datetime.now(timezone.utc).replace(tzinfo=None)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 # SQLite only auto-increments columns declared exactly as INTEGER PRIMARY KEY.
@@ -44,9 +44,7 @@ class User(Base):
         DateTime, nullable=False, default=utcnow, onupdate=utcnow
     )
 
-    tasks: Mapped[list["Task"]] = relationship(
-        back_populates="user", cascade="all, delete-orphan"
-    )
+    tasks: Mapped[list["Task"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     achievements: Mapped[list["UserAchievement"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
